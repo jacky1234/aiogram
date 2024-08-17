@@ -5,6 +5,7 @@ from os import getenv
 
 from aiogram import Bot, Dispatcher, html
 from aiogram.client.default import DefaultBotProperties
+from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message
@@ -47,7 +48,9 @@ async def echo_handler(message: Message) -> None:
 
 async def main() -> None:
     # Initialize Bot instance with default bot properties which will be passed to all API calls
-    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML),
+              session=AiohttpSession(proxy="http://127.0.0.1:7890")
+              )
 
     # And the run events dispatching
     await dp.start_polling(bot)
