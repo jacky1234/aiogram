@@ -6,6 +6,7 @@ from typing import Any, Dict
 
 from aiogram import Bot, Dispatcher, F, Router, html
 from aiogram.client.default import DefaultBotProperties
+from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.enums import ParseMode
 from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
@@ -18,7 +19,7 @@ from aiogram.types import (
 )
 
 TOKEN = getenv("BOT_TOKEN")
-
+print('Token={TOKEN}')
 form_router = Router()
 
 
@@ -126,7 +127,7 @@ async def show_summary(message: Message, data: Dict[str, Any], positive: bool = 
 
 async def main():
     # Initialize Bot instance with default bot properties which will be passed to all API calls
-    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML),session=AiohttpSession(proxy="http://127.0.0.1:7890"))
 
     dp = Dispatcher()
 
