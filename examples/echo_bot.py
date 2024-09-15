@@ -3,12 +3,13 @@ import logging
 import sys
 from os import getenv
 
-from aiogram import Bot, Dispatcher, html
+from aiogram import Bot, Dispatcher, html, F
 from aiogram.client.default import DefaultBotProperties
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message
+from aiogram.types.input_file import BufferedInputFile
 
 # Bot token can be obtained via https://t.me/BotFather
 TOKEN = getenv("BOT_TOKEN")
@@ -30,6 +31,18 @@ async def command_start_handler(message: Message) -> None:
     # Bot instance: `bot.send_message(chat_id=message.chat.id, ...)`
     await message.answer(f"Hello, {html.bold(message.from_user.full_name)}!")
 
+@dp.message(F.text == "test")
+async def hanle_test_message(message: Message) -> None:
+    """
+    Handler will forward receive a message back to the sender
+
+    By default, message handler will handle all message types (like a text, photo, sticker etc.)
+    attention: aiogram 的所有异步方法都需要通过 await 来执行. 否则这些操作不会被实际执行
+    """
+    await message.answer_document(
+        caption="PASS",
+        document=BufferedInputFile(b"test", filename="test.txt"),
+    )
 
 @dp.message()
 async def echo_handler(message: Message) -> None:
@@ -49,8 +62,7 @@ async def echo_handler(message: Message) -> None:
 async def main() -> None:
     # Initialize Bot instance with default bot properties which will be passed to all API calls
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML),
-              session=AiohttpSession(proxy="http://127.0.0.1:7890")
-              )
+              session=AiohttpSession(proxy="http://127.0.0.1:7890"))
 
     # And the run events dispatching
     await dp.start_polling(bot)
