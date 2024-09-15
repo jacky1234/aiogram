@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 
 from aiogram import Bot
 from aiogram.client.default import DefaultBotProperties
+from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.enums import ParseMode
 
 
@@ -28,6 +29,7 @@ async def main():
         default=DefaultBotProperties(
             parse_mode=ParseMode.HTML,
         ),
+        session=AiohttpSession(proxy="http://127.0.0.1:7890")
     ) as bot:
         await bot.send_message(chat_id=chat_id, text=message)
 

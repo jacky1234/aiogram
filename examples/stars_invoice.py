@@ -3,6 +3,7 @@ import logging
 from os import getenv
 
 from aiogram import Bot, Dispatcher, F, Router
+from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.filters import Command
 from aiogram.types import LabeledPrice, Message, PreCheckoutQuery
 
@@ -51,7 +52,7 @@ async def successful_payment(message: Message, bot: Bot) -> None:
 
 
 async def main() -> None:
-    bot = Bot(token=TOKEN)
+    bot = Bot(token=TOKEN, session=AiohttpSession(proxy="http://127.0.0.1:7890"))
 
     dispatcher = Dispatcher()
     dispatcher.include_router(invoices_router)
