@@ -3,7 +3,9 @@ import logging
 from os import getenv
 
 from aiogram import Bot, Dispatcher, F, Router
+from aiogram.client.default import DefaultBotProperties
 from aiogram.client.session.aiohttp import AiohttpSession
+from aiogram.enums.parse_mode import ParseMode
 from aiogram.filters import Command
 from aiogram.types import LabeledPrice, Message, PreCheckoutQuery
 
@@ -20,6 +22,7 @@ invoices_router = Router(name=__name__)
 
 @invoices_router.message(Command("start"))
 async def command_start(message: Message) -> None:
+    logger.info("Received /start command")
     # Send demo invoice to user, the payment will be refunded after successful payment
     await message.answer_invoice(
         title="Demo invoice",
@@ -28,7 +31,8 @@ async def command_start(message: Message) -> None:
             LabeledPrice(label="Demo", amount=42),
         ],
         payload="demo",
-        currency="XTR",
+        currency="USD",
+        provider_token="your-stripe-provider-token-here",  # 添加支付提供商令牌
     )
 
 
@@ -52,7 +56,7 @@ async def successful_payment(message: Message, bot: Bot) -> None:
 
 
 async def main() -> None:
-    bot = Bot(token=TOKEN, session=AiohttpSession(proxy="http://127.0.0.1:7890"))
+    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML), session=AiohttpSession(proxy="http://127.0.0.1:7890"))
 
     dispatcher = Dispatcher()
     dispatcher.include_router(invoices_router)
